@@ -1,0 +1,72 @@
+name = ific
+description = IFIC.
+core = 7.x
+base theme = bootstrap
+
+
+;;;;;;;;;;;;;;;;;;;;;
+;; Regions
+;;;;;;;;;;;;;;;;;;;;;
+
+regions[navigation]     = 'Navigation'
+regions[header]         = 'Top Bar'
+regions[highlighted]    = 'Highlighted'
+regions[content]        = 'Content'
+regions[sidebar_first]  = 'Primary'
+regions[sidebar_second] = 'Secondary'
+regions[footer]         = 'Footer'
+regions[page_top]       = 'Page top'
+regions[page_bottom]    = 'Page bottom'
+
+
+;;;;;;;;;;;;;;;;;;;;;
+;; Stylesheets
+;;;;;;;;;;;;;;;;;;;;;
+
+stylesheets[all][] = css/style.css
+stylesheets[all][] = css/stylesheet.css
+stylesheets[all][] = css/checkbox-radio-switch.css
+stylesheets[all][] = css/font-awesome.min.css
+stylesheets[all][] = css/font-awesome.css
+stylesheets[all][] = js/addons/bootstrap/jquery.smartmenus.bootstrap.css
+stylesheets[all][] = css/datepicker.css
+
+; For information on choosing the desired method, please read the Drupal
+; Bootstrap sub-theme "how-to" documentation:
+; https://drupal.org/node/1978010
+
+; ;----------------------------------
+; ; METHOD 1: Bootstrap Source Files
+; ;----------------------------------
+; 
+; ;;;;;;;;;;;;;;;;;;;;;
+; ;; Scripts
+; ;;;;;;;;;;;;;;;;;;;;;
+; 
+scripts[] = 'js/affix.js'
+scripts[] = 'js/alert.js'
+scripts[] = 'js/button.js'
+scripts[] = 'js/carousel.js'
+scripts[] = 'js/collapse.js'
+scripts[] = 'js/dropdown.js'
+scripts[] = 'js/modal.js'
+scripts[] = 'js/tooltip.js'
+scripts[] = 'js/popover.js'
+scripts[] = 'js/scrollspy.js'
+scripts[] = 'js/tab.js'
+scripts[] = 'js/transition.js'
+scripts[] = 'js/jquery.smartmenus.js'
+scripts[] = 'js/addons/bootstrap/jquery.smartmenus.bootstrap.js'
+scripts[] = 'js/date-time/bootstrap-datepicker.min.js'
+
+; ; Disable BootstrapCDN if using Bootstrap source files in your sub-theme.
+settings[bootstrap_cdn] = ''
+
+
+; ;-------------------------
+; ; METHOD 2: Bootstrap CDN
+; ;-------------------------
+;
+; Method 2 uses BootstrapCDN, the only thing you might need to provide here
+; is overrides to Bootstrap theme settings. Copy them here from the base theme
+; to override.

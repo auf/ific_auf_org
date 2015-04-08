@@ -1,0 +1,160 @@
+<?php
+/**
+ * Implementation of hook_views_pre_render()
+ *
+ * @param view $view
+ */
+function ific_form_views_pre_render(&$view)
+{
+}
+/** HOOK_INIT() */
+function ific_form_init()
+{
+}
+/**
+ * Implementation of form_alter() hook.
+ * */
+function ific_form_form_alter(&$form, &$form_state, $form_id)
+{
+   }
+function get_count_events($tid)
+{
+        global $language;
+        $lang_code = $language->language;
+        $query     = new EntityFieldQuery();
+        $query->entityCondition('entity_type', 'node');
+        $query->entityCondition('bundle', 'event');
+        $query->propertyCondition('status', 1);
+        $query->fieldCondition('field_tags', 'tid', $tid, '=');
+        $countnew = $query->count()->execute();
+        return $countnew;
+}
+function get_count_article($tid)
+{
+        global $language;
+        $lang_code = $language->language;
+        $query     = new EntityFieldQuery();
+        $query->entityCondition('entity_type', 'node');
+        $query->entityCondition('bundle',  'article');
+        $query->propertyCondition('status', 1);
+        $query->fieldCondition('field_tags', 'tid', $tid, '=');
+        $countnew = $query->count()->execute();
+        return $countnew;
+}
+function get_count_salle($tid)
+{
+        global $language;
+        $lang_code = $language->language;
+        $query     = new EntityFieldQuery();
+        $query->entityCondition('entity_type', 'node');
+        $query->entityCondition('bundle', 'salle_de_presse');
+        $query->propertyCondition('status', 1);
+        $query->fieldCondition('field_tags', 'tid', $tid, '=');
+        $countnew = $query->count()->execute();
+        return $countnew;
+}
+function get_count_media($tid)
+{
+        global $language;
+        $lang_code = $language->language;
+        $query     = new EntityFieldQuery();
+        $query->entityCondition('entity_type', 'node');
+        $query->entityCondition('bundle','mediath_que');
+        $query->propertyCondition('status', 1);
+        $query->fieldCondition('field_tags', 'tid', $tid, '=');
+        $countnew = $query->count()->execute();
+        return $countnew;
+}
+/**
+ * Impliments hook_form_views_exposed_form_alter
+ *
+ * Used to change exposed date filter to month only, as this is not available in the views UI
+ */
+function ific_form_form_views_exposed_form_alter(&$form, $form_state)
+{
+        
+        $form['field_faq_theme_tid']['#options']['All']=t('Tout');
+        $form['field_tags_tid']['#options']['All']=t('Tout');
+        $array = array(
+                'views-exposed-form-events-page',
+                'views-exposed-form-mediatheque-page',
+                'views-exposed-form-actualites-page',
+                'views-exposed-form-salle-de-prese-page'
+        );
+        if (in_array($form['#id'], $array)) {
+            
+                foreach ($form['field_tags_tid']['#options'] as $tid => $term_name) {
+                        $COUNT = get_count_events($tid);
+                        $COUNT_Med = get_count_media($tid);
+                        $COUNT_ART= get_count_article($tid);
+                        $COUNT_SALLE = get_count_salle($tid);
+                        //if ($tid != 'All')
+                                if ($form['#id'] == 'views-exposed-form-events-page' && $COUNT == 0 && $tid != 'All') {
+                                        unset($form['field_tags_tid']['#options'][$tid]);
+                                }
+                                if ($form['#id'] ==  'views-exposed-form-mediatheque-page' && $COUNT_Med  == 0 && $tid != 'All') {
+                                        unset($form['field_tags_tid']['#options'][$tid]);
+                                }
+                                if ($form['#id'] == 'views-exposed-form-actualites-page' && $COUNT_ART == 0 && $tid != 'All') {
+                                        unset($form['field_tags_tid']['#options'][$tid]);
+                                }
+                                if ($form['#id'] == 'views-exposed-form-salle-de-prese-page' && $COUNT_SALLE == 0 && $tid != 'All') {
+                                        unset($form['field_tags_tid']['#options'][$tid]);
+                                }
+                }
+        }
+}
+define('administrateur_RID', 6);
+/**
+* Implements hook_menu_alter.
+* Check access for forum menu item.
+*/
+function ific_form_menu_alter(&$items) {
+global $user;
+  if(array_key_exists(administrateur_RID, $user->roles) || $user->uid == 124){
+  $items['admin/structure/taxonomy/%/fields']['access callback'] = FALSE;
+  $items['admin/structure/taxonomy/%/edit']['access callback'] = FALSE;
+  $items['admin/structure/taxonomy/%/fields']['access callback'] = FALSE;
+  $items['admin/structure/taxonomy/%/display']['access callback'] = FALSE;
+  $items['admin/structure/taxonomy/event_calendar_status']['access callback'] = FALSE;
+  }
+}
+
+/**
+* Implements hook_menu_local_tasks_alter.
+* Check access for forum menu item.
+*/
+function ific_form_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+ global $user;
+
+  switch($root_path){
+    case 'admin/structure/taxonomy' : 
+                if(array_key_exists(administrateur_RID, $user->roles) || $user->uid == 124){
+                        unset($data['actions']['output'][0]);
+                        unset($data['tabs'][0]['output']);
+                        unset($data['tabs'][0]['output']);
+                        unset($data['tabs'][0]['output']);
+                }     
+    break;
+        case'admin/structure/taxonomy/%':
+                if(array_key_exists(administrateur_RID, $user->roles) || $user->uid == 124){
+                        unset($data['tabs'][0]['output'][1]);
+                        unset($data['tabs'][0]['output'][2]);
+                        unset($data['tabs'][0]['output'][3]);
+                }     
+        break;
+       
+        case'admin/structure/taxonomy/%/add':
+                if(array_key_exists(administrateur_RID, $user->roles) || $user->uid == 124){
+                unset($data['tabs'][0]['output'][2]);
+                        unset($data['tabs'][0]['output'][3]);
+                }               
+        break;
+        case'admin/structure/taxonomy/%/edit':
+                if(array_key_exists(administrateur_RID, $user->roles) || $user->uid == 124){
+                unset($data['tabs'][0]['output'][2]);
+                        unset($data['tabs'][0]['output'][3]);
+                }               
+        break;
+  }
+}
